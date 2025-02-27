@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[191]:
-
 
 import re
 import random
@@ -19,16 +14,10 @@ import pyLDAvis.gensim
 from IPython.display import display
 
 
-# In[192]:
-
-
 # Load and preprocess text data
 file_path = '/Users/filippomosca/Desktop/Tractatus Logico-Philosophicus.md'
 with open(file_path, 'r', encoding='utf-8') as file:
     tractatus_text = file.read()
-
-
-# In[193]:
 
 
 # Segment the text based on the structure of the Tractatus
@@ -42,81 +31,47 @@ for i in range(len(matches)):
     segments.append(tractatus_text[start:end].strip())
 
 
-# In[194]:
-
-
 # Print a random segment to verify segmentation
 if segments:
     print("Random segment after segmentation:", random.choice(segments))
-
-
-# In[195]:
-
 
 # Store original segments for later comparison
 original_segments = segments.copy()
 
 
-# In[ ]:
 
 
 
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[196]:
 
 
 # Text Cleaning
-
-
-# In[197]:
 
 
 nltk.download('stopwords')
 german_stopwords = set(stopwords.words('german'))
 
 
-# In[198]:
-
-
 # Remove punctuation and special characters
 segments_no_punctuation = [re.sub(r'[,.!?();\[\]“”–:„|«»=_⊃\-∃^~*>]', '', text) for text in segments]
 
-
-# In[199]:
 
 
 # Remove image references
 segments_no_images = [re.sub(r'\bimagepng[^\s]+', '', text) for text in segments_no_punctuation]
 
 
-# In[200]:
-
 
 # Remove occurrences of "MATHEMATICAL FORMULA"
 segments_no_math = [text.replace("MATHEMATICAL FORMULA", "") for text in segments_no_images]
 
 
-# In[201]:
 
 
 # Remove all numbers
 segments_no_numbers = [re.sub(r'\b\d+\b', '', text) for text in segments_no_math]
 
 
-# In[202]:
 
 
 # Remove words containing "overline"
@@ -124,13 +79,11 @@ def remove_words_with_overline(text):
     return ' '.join([word for word in text.split() if 'overline' not in word])
 
 
-# In[203]:
 
 
 segments_no_overline = [remove_words_with_overline(text) for text in segments_no_numbers]
 
 
-# In[204]:
 
 
 # Remove words containing "\text{c}"
@@ -138,27 +91,22 @@ def remove_words_with_textc(text):
     return ' '.join([word for word in text.split() if '\\text{c}' not in word])
 
 
-# In[205]:
 
 
 segments_no_textc = [remove_words_with_textc(text) for text in segments_no_overline]
 
 
-# In[206]:
 
 
 # Convert to lowercase
 segments_lower = [text.lower() for text in segments_no_textc]
 
 
-# In[207]:
 
 
 # Remove stopwords
 segments_no_stopwords = [' '.join([word for word in text.split() if word not in german_stopwords]) for text in segments_lower]
 
-
-# In[208]:
 
 
 # Remove custom stopwords
@@ -169,25 +117,12 @@ custom_stopwords = {"xi", "ja", "bzw", "zb", "etc", "screenshot", "png", "usw", 
 segments_no_custom_stopwords = remove_custom_stopwords(segments_no_stopwords, custom_stopwords)
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[209]:
 
 
 # Lemmatization using HanoverTagger (Only Nouns and Adjectives)
@@ -200,7 +135,6 @@ for text in segments_no_custom_stopwords:  # Directly using cleaned text
     lemmatized_segments.append(lemmas)
 
 
-# In[210]:
 
 
 # Custom Lemma Mapping AFTER Lemmatization
@@ -215,7 +149,6 @@ custom_lemma_mapping = {
 }
 
 
-# In[211]:
 
 
 # Apply custom lemma mapping, checking original tokens
@@ -226,15 +159,12 @@ for idx, (original_tokens, lemmas) in enumerate(zip(segments_no_custom_stopwords
                 lemmas.append(base_lemma)
 
 
-# In[212]:
-
 
 # Custom Lemma Removal
 lemmas_to_remove = {"gebildet", "sagen", "benützen", "ersehen"}  # Add more unwanted lemmas here
 lemmatized_segments_filtered = [[lemma for lemma in segment if lemma not in lemmas_to_remove] for segment in lemmatized_segments]
 
 
-# In[237]:
 
 
 # Dictionary of lemma corrections
@@ -255,14 +185,12 @@ lemma_corrections = {
 }
 
 
-# In[238]:
 
 
 # Apply corrections directly to lemmatized segments
 lemmatized_segments_corrected = [[lemma_corrections.get(word, word) for word in segment] for segment in lemmatized_segments_filtered]
 
 
-# In[239]:
 
 
 # Create Gensim Dictionary and Corpus
@@ -270,7 +198,6 @@ dictionary = corpora.Dictionary(lemmatized_segments_corrected)
 corpus = [dictionary.doc2bow(text) for text in lemmatized_segments_corrected]
 
 
-# In[244]:
 
 
 # Print verification sample
@@ -280,33 +207,27 @@ if lemmatized_segments_corrected:
     print("Processed segment after full preprocessing:", lemmatized_segments_corrected[random_index])
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[241]:
 
 
 # Topic Modeling using LDA (Gensim)
 n_topics = 7
 lda_model = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n_topics, passes=10, random_state=0)
 
-
-# In[242]:
 
 
 # Print top words for each topic
@@ -319,19 +240,15 @@ def print_top_words(model, num_words=10):
 print_top_words(lda_model, num_words=10)
 
 
-# In[230]:
-
 
 # Topic Visualization
 prepared_data = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary)
 pyLDAvis.display(prepared_data)
 
 
-# In[30]:
-
 
 # Extract most representative documents per topic
-def extract_top_documents(lda_model, corpus, dictionary, original_docs, n_top_words=10, n_top_documents=10, output_file_path="/Users/filippomosca/Desktop/tractatus_most_paradigmatic_segments_by_topic_n_5.txt"):
+def extract_top_documents(lda_model, corpus, dictionary, original_docs, n_top_words=10, n_top_documents=10, output_file_path="/Users/filippomosca/Desktop/tractatus_most_paradigmatic_segments_by_topic.txt"):
     try:
         doc_topic_dist = [lda_model.get_document_topics(doc, minimum_probability=0) for doc in corpus]
         topics_words = [(topic_idx, [word for word, _ in lda_model.show_topic(topic_idx, n_top_words)]) for topic_idx in range(n_topics)]
@@ -352,7 +269,6 @@ def extract_top_documents(lda_model, corpus, dictionary, original_docs, n_top_wo
 extract_top_documents(lda_model, corpus, dictionary, original_segments)
 
 
-# In[ ]:
 
 
 
