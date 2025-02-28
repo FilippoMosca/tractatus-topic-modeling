@@ -47,7 +47,7 @@ Topic Modeling
 * An LDA (Latent Dirichlet Allocation) model is trained with a user-defined number of topics.
 * The most representative words for each topic are identified and displayed.
 * pyLDAvis is used to generate an interactive visualization of topics and their distribution.
-* The most representative text segments for each topic are extracted and saved in a file. Examining these segments might help in better understanding and identifying what each topic is. 
+* The visualization is saved as an HTML file. 
 
 
 
