@@ -161,7 +161,7 @@ if lemmatized_segments_corrected:
 
 
 # Topic Modeling using LDA (Gensim)
-n_topics = 7
+n_topics = 10             #Select a number of topics
 lda_model = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n_topics, passes=10, random_state=0)
 
 # Print top words for each topic
@@ -178,7 +178,7 @@ prepared_data = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary)
 pyLDAvis.display(prepared_data)
 
 # Save visualization to HTML file
-output_html_path = "/Users/filippomosca/Desktop/tractatus_lda_visualization.html"
+output_html_path = "/Users/filippomosca/Desktop/tractatus_lda_visualization.html"             #Create your own output  
 pyLDAvis.save_html(prepared_data, output_html_path)
 print(f"LDA visualization saved to {output_html_path}")
 
