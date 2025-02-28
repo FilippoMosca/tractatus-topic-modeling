@@ -81,9 +81,8 @@ segments_no_stopwords = [' '.join([word for word in text.split() if word not in 
 def remove_custom_stopwords(texts, custom_stopwords):
     return [' '.join([word for word in text.split() if word not in custom_stopwords]) for text in texts]
 
-custom_stopwords = {"xi", "ja", "bzw", "zb", "etc", "screenshot", "png", "usw", "wr", "wrs", "dh", "e"}
+custom_stopwords = {"xi", "ja", "bzw", "zb", "etc", "screenshot", "png", "usw", "wr", "wrs", "dh", "e", "P", "Q", "A", "B", "C", "Z"}
 segments_no_custom_stopwords = remove_custom_stopwords(segments_no_stopwords, custom_stopwords)
-
 
 
 #################################################
@@ -178,26 +177,13 @@ print_top_words(lda_model, num_words=10)
 prepared_data = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary)
 pyLDAvis.display(prepared_data)
 
-# Extract most representative documents per topic
-def extract_top_documents(lda_model, corpus, dictionary, original_docs, n_top_words=10, n_top_documents=10, output_file_path="/Users/filippomosca/Desktop/tractatus_most_paradigmatic_segments_by_topic.txt"):
-    try:
-        doc_topic_dist = [lda_model.get_document_topics(doc, minimum_probability=0) for doc in corpus]
-        topics_words = [(topic_idx, [word for word, _ in lda_model.show_topic(topic_idx, n_top_words)]) for topic_idx in range(n_topics)]
-        
-        with open(output_file_path, 'w', encoding='utf-8') as f:
-            for topic_number, words in topics_words:
-                f.write(f"Topic {topic_number}:\n")
-                f.write(", ".join(words) + "\n\n")
-                doc_indices = np.argsort([doc[topic_number][1] for doc in doc_topic_dist])[::-1][:n_top_documents]
-                for doc_index in doc_indices:
-                    f.write(f"Document segment:\n{original_docs[doc_index]}\n\n")
-                    f.write("-" * 80 + "\n")
-                f.write("= " * 40 + "\n\n")
-        print(f"File successfully saved at {output_file_path}")
-    except Exception as e:
-        print(f"Error while saving the file: {e}")
+# Save visualization to HTML file
+output_html_path = "/Users/filippomosca/Desktop/tractatus_lda_visualization.html"
+pyLDAvis.save_html(prepared_data, output_html_path)
+print(f"LDA visualization saved to {output_html_path}")
 
-extract_top_documents(lda_model, corpus, dictionary, original_segments)
+
+
 
 
 
