@@ -51,3 +51,6 @@ Topic Modeling
 
 
 
+## 🌍 LDA Visualization (Online)
+[Click here to view an example of LDA visualization // 10 topics](https://FilippoMosca.github.io/tractatus-topic-modeling/tractatus_lda_visualization.html)
+
