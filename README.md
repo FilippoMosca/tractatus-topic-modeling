@@ -7,7 +7,10 @@ Topic modeling applied to Wittgenstein’s Tractatus Logico-Philosophicus using 
 README
 
 
+
+
 Overview
+
 The script tractatus_topic_modeling.py performs topic modeling on Tractatus Logico-Philosophicus by Ludwig Wittgenstein. The pipeline consists of four main steps:
 1. Data Loading & Segmentation: The text is loaded and split into structured segments based on the numbering in Tractatus.
 2. Preprocessing & Cleaning: Unnecessary elements such as punctuation, images, numbers, and stopwords are removed.
